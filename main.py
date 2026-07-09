@@ -66,4 +66,4 @@ if __name__ == "__main__":
         print("Sending WhatsApp message...")
         send_whatsapp(msg)
     else:
-        print("Could not get weather data. Message not sent.")Tălmaciu, RO
+        print("Could not get weather data. Message not sent.")
