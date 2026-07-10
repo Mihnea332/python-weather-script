@@ -3,7 +3,7 @@ name: Send WhatsApp Weather Report
 on:
   schedule:
     # Rulează zilnic la 06:00 și 14:00 UTC (09:00 și 17:00 ora României)
-    - cron: '15 6,14 * * *'
+    - cron: '27 6,14 * * *'
   workflow_dispatch: 
     # Acest rând îți permite să rulezi manual scriptul din GitHub cu un buton, ca să îl poți testa imediat
 
