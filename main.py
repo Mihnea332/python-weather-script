@@ -1,13 +1,11 @@
 import os
 import requests
 from fastapi import FastAPI, HTTPException
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
 from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="WhatsApp Weather App")
+app = FastAPI(title="Ntfy Weather App")
 
 
 def fetch_weather():
@@ -57,25 +55,30 @@ def fetch_weather():
         return None
 
 
-def send_whatsapp(weather_message):
-    sid = os.getenv("TWILIO_ACCOUNT_SID")
-    token = os.getenv("TWILIO_AUTH_TOKEN")
-    twilio_number = os.getenv("TWILIO_WHATSAPP_NUMBER")
-    your_number = os.getenv("YOUR_PHONE_NUMBER")
+def send_ntfy(weather_message):
+    # Aici pui numele topicului la care te-ai abonat în aplicația de pe iOS
+    # Îl extragem din .env sau punem o valoare directă (înlocuiește 'vremea_secret_123' cu al tău)
+    topic = os.getenv("NTFY_TOPIC", "vremea_secret_123")
+    url = f"https://ntfy.sh/{topic}"
+
+    # Configurăm aspectul notificării (Titlu și un icon)
+    headers = {
+        "Title": "☀️ Raport Meteo",
+        "Tags": "partly_sunny"
+    }
+
     try:
-        client = Client(sid, token)
-        message = client.messages.create(
-            body=weather_message,
-            from_=twilio_number,
-            to=your_number
+        response = requests.post(
+            url,
+            data=weather_message.encode('utf-8'),
+            headers=headers,
+            timeout=10
         )
-        return message.sid
-    except TwilioRestException as e:
-        print(f"Twillio error: {e.code}, {e.msg}")
-        return None
+        response.raise_for_status()
+        return True
     except Exception as e:
-        print(f"Error: {e}")
-        return None
+        print(f"Error sending ntfy notification: {e}")
+        return False
 
 
 @app.get("/")
@@ -86,14 +89,20 @@ def home():
 @app.get("/send-weather")
 def trigger_notification():
     weather_message = fetch_weather()
+
     if not weather_message:
         raise HTTPException(
-            status_code=500, detail="We couldn't extract the weather information.")
-    message_id = send_whatsapp(weather_message)
-    if not message_id:
-        raise HTTPException(status_code=500, detail="Couldn't send message")
+            status_code=500, detail="We couldn't extract the weather information."
+        )
+
+    # Apelăm noua funcție ntfy
+    success = send_ntfy(weather_message)
+
+    if not success:
+        raise HTTPException(
+            status_code=500, detail="Couldn't send ntfy message")
+
     return {
         "success": True,
-        "message": "The notification was sent",
-        "twilio_id": message_id
+        "message": "The notification was sent successfully via ntfy!"
     }
