@@ -25,4 +25,5 @@ jobs:
       - name: Run Python script
         env:
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python main.py
