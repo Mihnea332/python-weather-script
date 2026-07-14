@@ -56,14 +56,10 @@ def fetch_weather():
 
 
 def send_ntfy(weather_message):
-    # Aici pui numele topicului la care te-ai abonat în aplicația de pe iOS
-    # Îl extragem din .env sau punem o valoare directă (înlocuiește 'vremea_secret_123' cu al tău)
     topic = os.getenv("NTFY_TOPIC", "vremea_secret_123")
     url = f"https://ntfy.sh/{topic}"
-
-    # Configurăm aspectul notificării (Titlu și un icon)
     headers = {
-        "Title": "☀️ Raport Meteo",
+        "Title": "Weather report",
         "Tags": "partly_sunny"
     }
 
@@ -95,7 +91,6 @@ def trigger_notification():
             status_code=500, detail="We couldn't extract the weather information."
         )
 
-    # Apelăm noua funcție ntfy
     success = send_ntfy(weather_message)
 
     if not success:
