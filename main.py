@@ -106,14 +106,6 @@ def trigger_notification():
         print(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
-    print("Fetching weather...")
-    msg = fetch_weather()
-    if msg:
-        print("Sending WhatsApp message...")
-        send_whatsapp(msg)
-    else:
-        print("Could not get weather data. Message not sent.")
-if __name__ == "__main__":
     print("Se rulează automatizarea de pe GitHub...")
     mesaj = fetch_weather()
     if mesaj:
