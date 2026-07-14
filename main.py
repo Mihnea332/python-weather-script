@@ -1,5 +1,6 @@
 import os
 import requests
+<<<<<<< HEAD
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 
@@ -7,30 +8,34 @@ load_dotenv()
 
 app = FastAPI(title="Ntfy Weather App")
 
+=======
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
+>>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
 
 def fetch_weather():
     api_key = os.getenv("WEATHER_API_KEY")
     city = "Tălmaciu, RO"
-
+    
     current_url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=en"
     forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric&lang=en"
-
+    
     try:
         current_response = requests.get(current_url, timeout=10)
         current_response.raise_for_status()
         current_data = current_response.json()
-
+        
         forecast_response = requests.get(forecast_url, timeout=10)
         forecast_response.raise_for_status()
         forecast_data = forecast_response.json()
-
+        
         current_temp = round(current_data["main"]["temp"])
         feels_like = round(current_data["main"]["feels_like"])
         description = current_data["weather"][0]["description"].capitalize()
-
+        
         pop_decimal = forecast_data["list"][0].get("pop", 0)
         rain_chance = int(pop_decimal * 100)
-
+        
         custom_message = (
             f"📍 Weather report for {city}:\n\n"
             f"🌡️ Temperature: {current_temp}°C (feels like {feels_like}°C)\n"
@@ -38,22 +43,13 @@ def fetch_weather():
             f"☔ Chance of precipitation: {rain_chance}%\n\n"
             f"Have a great day! ☕"
         )
-
         return custom_message
-
-    except requests.exceptions.Timeout:
-        print("Internal error: OpenWeatherMap timeout.")
-        return None
-    except requests.exceptions.RequestException as e:
-        print(f"Network error: {e}")
-        return None
-    except KeyError as e:
-        print(f"Internal error (data structure): Missing key {e}")
-        return None
+        
     except Exception as e:
-        print(f"Unexpected error processing weather: {e}")
+        print(f"Error fetching weather: {e}")
         return None
 
+<<<<<<< HEAD
 
 def send_ntfy(weather_message):
     topic = os.getenv("NTFY_TOPIC", "vremea_secret_123")
@@ -63,6 +59,14 @@ def send_ntfy(weather_message):
         "Tags": "partly_sunny"
     }
 
+=======
+def send_whatsapp(weather_message):
+    sid = os.getenv("TWILIO_ACCOUNT_SID")
+    token = os.getenv("TWILIO_AUTH_TOKEN")
+    twilio_number = os.getenv("TWILIO_WHATSAPP_NUMBER")
+    your_number = os.getenv("YOUR_PHONE_NUMBER")
+    
+>>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
     try:
         response = requests.post(
             url,
@@ -70,6 +74,7 @@ def send_ntfy(weather_message):
             headers=headers,
             timeout=10
         )
+<<<<<<< HEAD
         response.raise_for_status()
         return True
     except Exception as e:
@@ -101,3 +106,20 @@ def trigger_notification():
         "success": True,
         "message": "The notification was sent successfully via ntfy!"
     }
+=======
+        print(f"Message sent successfully! ID: {message.sid}")
+    except TwilioRestException as e:
+        print(f"Twilio Error: {e.msg}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+# Punctul de intrare pentru GitHub Actions
+if __name__ == "__main__":
+    print("Fetching weather...")
+    msg = fetch_weather()
+    if msg:
+        print("Sending WhatsApp message...")
+        send_whatsapp(msg)
+    else:
+        print("Could not get weather data. Message not sent.")
+>>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
