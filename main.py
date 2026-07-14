@@ -123,3 +123,14 @@ if __name__ == "__main__":
     else:
         print("Could not get weather data. Message not sent.")
 >>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
+if __name__ == "__main__":
+    print("Se rulează automatizarea de pe GitHub...")
+    mesaj = fetch_weather()
+    if mesaj:
+        rezultat = send_ntfy(mesaj)
+        if rezultat:
+            print("Notificarea ntfy a fost trimisă cu succes!")
+        else:
+            print("Eroare la trimiterea notificării.")
+    else:
+        print("Nu s-au putut extrage datele meteo.")
