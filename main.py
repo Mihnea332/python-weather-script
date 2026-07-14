@@ -1,6 +1,5 @@
 import os
 import requests
-<<<<<<< HEAD
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 
@@ -8,10 +7,8 @@ load_dotenv()
 
 app = FastAPI(title="Ntfy Weather App")
 
-=======
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
->>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
 
 def fetch_weather():
     api_key = os.getenv("WEATHER_API_KEY")
@@ -49,7 +46,6 @@ def fetch_weather():
         print(f"Error fetching weather: {e}")
         return None
 
-<<<<<<< HEAD
 
 def send_ntfy(weather_message):
     topic = os.getenv("NTFY_TOPIC", "vremea_secret_123")
@@ -59,14 +55,12 @@ def send_ntfy(weather_message):
         "Tags": "partly_sunny"
     }
 
-=======
 def send_whatsapp(weather_message):
     sid = os.getenv("TWILIO_ACCOUNT_SID")
     token = os.getenv("TWILIO_AUTH_TOKEN")
     twilio_number = os.getenv("TWILIO_WHATSAPP_NUMBER")
     your_number = os.getenv("YOUR_PHONE_NUMBER")
     
->>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
     try:
         response = requests.post(
             url,
@@ -74,7 +68,6 @@ def send_whatsapp(weather_message):
             headers=headers,
             timeout=10
         )
-<<<<<<< HEAD
         response.raise_for_status()
         return True
     except Exception as e:
@@ -106,14 +99,12 @@ def trigger_notification():
         "success": True,
         "message": "The notification was sent successfully via ntfy!"
     }
-=======
         print(f"Message sent successfully! ID: {message.sid}")
     except TwilioRestException as e:
         print(f"Twilio Error: {e.msg}")
     except Exception as e:
         print(f"Unexpected error: {e}")
 
-# Punctul de intrare pentru GitHub Actions
 if __name__ == "__main__":
     print("Fetching weather...")
     msg = fetch_weather()
@@ -122,7 +113,6 @@ if __name__ == "__main__":
         send_whatsapp(msg)
     else:
         print("Could not get weather data. Message not sent.")
->>>>>>> 86cb8532c96dc182ff82c8d974c4487cc93937ec
 if __name__ == "__main__":
     print("Se rulează automatizarea de pe GitHub...")
     mesaj = fetch_weather()
